@@ -1,0 +1,93 @@
+{
+  "theme_strategy": {
+    "mode": "hybrid",
+    "details": "Deep Navy (#071A33) serves as the anchor background for high-impact sections (Hero, Manifesto, Footer), instilling trust and stability. Light Gray (#F3F6F9) and White (#FFFFFF) are used for high-density content grids (Why MBtex) to maintain legibility. Accent heavily with Gold (#C9A227) for luxury/wealth and Electric Cyan (#00B8D9) for fintech innovation."
+  },
+  "typography": {
+    "headings": "Cormorant Garamond",
+    "subheadings": "Cabinet Grotesk",
+    "body": "Manrope",
+    "hierarchy_rules": "H1 max text-5xl md:text-7xl with tracking-tight. Overlines uppercase tracking-[0.2em] in Cabinet Grotesk. Body loose leading-relaxed in Manrope.",
+    "instructions": "Use font-light or font-black on headings to create radical contrast. Never default to generic bold."
+  },
+  "colors": {
+    "primary_bg": "#071A33",
+    "primary_bg_light": "#F3F6F9",
+    "accent_gold": "#C9A227",
+    "accent_cyan": "#00B8D9",
+    "action_blue": "#1557B0",
+    "text_main": "#FFFFFF",
+    "text_dark": "#071A33",
+    "text_muted": "#9CA3AF"
+  },
+  "visual_enhancers": {
+    "background_pattern": "MANDATORY: Create a custom `<GeometricBackground />` component using absolute positioned inline SVG. Draw thin, elegant circular and straight intersecting lines (like topography or high-tech network nodes) covering the Deep Navy background. Use stroke='#C9A227' and stroke='#00B8D9' with 10-15% opacity.",
+    "hero_animations": "Kinetic Hero with masked line-by-line text reveal on load using framer-motion (`overflow-hidden`, `y: 100%` to `y: 0`, staggered). Implement subtle parallax on the hero image/pattern.",
+    "scroll_effects": "Lenis smooth scrolling (MANDATORY). Framer-motion scroll reveals (y: 30, opacity: 0 -> 1) with staggered delays for bento grids.",
+    "marquee": "One slow editorial marquee (using react-fast-marquee). High contrast, elegant spacing (`gap-24` or `gap-32`). Do not make it a fast racecar; make it a slow organic drift.",
+    "surfaces": "Sticky headers MUST use Crystal Glassmorphism (`backdrop-blur-xl bg-[#071A33]/70 border-b border-[#C9A227]/20`).",
+    "icons": "Use `@phosphor-icons/react` (Duotone/Light weight) for large section decorative icons. Install using `yarn add @phosphor-icons/react`."
+  },
+  "layouts": {
+    "hero": "Full height (min-h-screen). Deep Navy background with `<GeometricBackground />`. Massive Cormorant Garamond typography. Floating Gold/Cyan accents.",
+    "why_mbtex": "Bento Grid Protocol: 3x2 grid of cards on Light Gray (#F3F6F9) background. Use tight gaps (`gap-6`) and generous internal card padding (`p-8`).",
+    "what_we_do": "Numbered manifesto chapters. Vertical stacked sections with massive sticky numbers (text-8xl text-[#C9A227]/20) on the left (col-span-4), content and imagery on the right (col-span-8).",
+    "fintech_tabs": "Platform 02 must feature a highly customized Shadcn Tabs component for 'Personal/Business/Merchants/Developers/Institutions'. Use pill-shaped triggers with Gold active state.",
+    "approach": "Horizontal scrolling section or staggered vertical timeline using framer-motion."
+  },
+  "component_instructions": {
+    "tabs": "Override standard Shadcn tabs. Use pill-shaped triggers. Avoid Vercel-look; match the Old Money Tech aesthetic.",
+    "contact_form": "Use Shadcn Form, Input, Textarea, Select. Background of form area should be Navy. Inputs should be glassmorphic (`bg-white/5 border-white/10 text-white focus:border-[#C9A227]`). Placeholder contact details: info@mbtexgroup.com, Switzerland.",
+    "buttons": "Primary buttons: `#1557B0` background with `#FFFFFF` text, subtle hover lift (`-translate-y-1`) and shadow. Secondary/Premium buttons: `#C9A227` border with hover fill."
+  },
+  "accessibility": {
+    "contrast": "Ensure APCA contrast standards. White text on Navy is good. Gold on Navy is good. Cyan on Navy is good.",
+    "testing": "All interactive elements MUST include `data-testid` (e.g., `data-testid='contact-submit-button'`, `data-testid='hero-cta'`, `data-testid='fintech-tab-personal'`)."
+  },
+  "image_urls": {
+    "hero_or_swiss_heritage": {
+      "url": "https://images.pexels.com/photos/38967250/pexels-photo-38967250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "An office building in Lucerne, Switzerland, with a beautiful mountain range visible in the background.",
+      "placement": "Hero background overlay (opacity 20% with multiply/luminosity blend) or Who We Are section."
+    },
+    "platform_01_real_estate": {
+      "url": "https://images.pexels.com/photos/5435079/pexels-photo-5435079.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Contemporary building featuring lush vertical gardens on balconies.",
+      "placement": "What We Do - 01 Real Estate & Urban Development"
+    },
+    "platform_02_fintech": {
+      "url": "https://images.pexels.com/photos/32299941/pexels-photo-32299941.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Close-up of cryptocurrency market data visualization on screens with highlighted trends and charts.",
+      "placement": "What We Do - 02 Fintech & Digital Financial Infrastructure"
+    },
+    "platform_03_sports": {
+      "url": "https://images.unsplash.com/photo-1587280501635-6cb10ee2c256?auto=format&fit=crop&q=80",
+      "description": "Modern sports stadium architecture at night.",
+      "placement": "What We Do - 03 Sports Infrastructure Events & Development"
+    },
+    "platform_04_commodities": {
+      "url": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80",
+      "description": "Shipping containers in a port for global commodities.",
+      "placement": "What We Do - 04 Global Commodities Trading"
+    },
+    "platform_05_sustainability": {
+      "url": "https://images.unsplash.com/photo-1521292270410-a8c4d716d518?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxzd2lzcyUyMG1vdW50YWlucyUyMGJ1c2luZXNzfGVufDB8fHx8MTc4Nzc1MDc4Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "Mountain filled with trees during daytime.",
+      "placement": "What We Do - 05 Sustainable & Green Brands"
+    }
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You MUST NOT apply universal transition (e.g., transition: all). Add transitions for specific interactive elements only.",
+    "You MUST NOT center align the app container (.App { text-align: center; } is FORBIDDEN).",
+    "Never use AI assistant Emoji characters (🤖🧠💭💡🔮🎯) for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, custom cursors, selection states, and loading animations separate good from extraordinary.",
+    "Use `sonner` for toasts. Sonner component are located in `/app/frontend/src/components/ui/sonner.js` if available, or install and configure.",
+    "Prioritize using pre-existing components from src/components/ui.",
+    "ALL interactive elements MUST have `data-testid` attribute (e.g. `data-testid='hero-cta'`).",
+    "Do not use complete transparent background in header, overlays, or any surface that has content under it. Example: Dropdown with transparent background is strictly prohibited.",
+    "For all .js files, ensure the syntax aligns with modern React standards without TypeScript typings, as this is a JS project.",
+    "Always provide GENERAL UI UX DESIGN GUIDELINES applied strictly for a cooperation level, premium website."
+  ]
+}
