@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only verification of MBtex landing page fixes (ScrollLines parallax component + replaced 404 stadium image) plus contact-form e2e including backend POST/GET /api/contact. Tested on desktop 1920x1080 and mobile 390x844 via public REACT_APP_BACKEND_URL. All 6 requested items PASS; zero console/page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Contact form", "issues": ["Placeholder text (Full Name / Email Address / textarea) is low-contrast grey on dark glass input — borderline WCAG readability; consider lightening placeholder color"]},
+      {"screen": "Hero (desktop)", "issues": ["Gold scroll line passes directly through the hero headline area; intentional per design but slightly reduces text crispness at 1920px"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx: correct implementation — fixed inset-0, z-40, pointer-events-none, aria-hidden, 3 motion SVGs driven by useSpring(scrollYProgress). elementFromPoint checks confirmed no interaction blocking on nav/CTAs/submit button.",
+    "Contact form testids are contact-input-name/email/message (not contact-name-input); review request naming was stale — noted for future test agents.",
+    "Backend POST /api/contact stores empty strings for optional company/interest from the UI while direct API calls store null; consider normalizing to null for consistency (cosmetic)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Two TEST_ contact inquiries created via API and UI (TEST_qa / TEST_QA User) — left in DB, no delete endpoint exists",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: (1) page 200 + no console errors; (2) [data-testid='scroll-lines'] fixed/z-40/pointer-events-none with 3 SVGs, transforms changed from -400/-200/-600 to -1388/-1682/-1094 after scrolling 50% (spring needs ~2s settle); (3) all 6 <img> naturalWidth>0 incl. pexels 399187 stadium (1200px); (4) hero-cta-explore, nav-link-approach, contact-submit-button all pass elementFromPoint hit-test and click (Lenis smooth scroll works); (5) contact form submit -> 'Thank you. Your inquiry has been received' toast, fields cleared, record present in GET /api/contact; (6) fintech-tab-merchants renders SoftPOS. Mobile: menu toggle works, no horizontal overflow. Correct contact testids: contact-input-name/email/company/message, contact-select-interest, contact-submit-button.",
+  "rca_of_the_issue": "N/A — both reported defects (404 image, missing scroll lines) are confirmed fixed."
+}

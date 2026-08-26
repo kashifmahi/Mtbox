@@ -31,7 +31,7 @@ const platforms = [
     text: "Sport is an engine for infrastructure development, economic activity, youth development, education, tourism and international cooperation. Our platform covers sports-related infrastructure, events, commercial activities and educational initiatives.",
     points: ["Sports Infrastructure & Academies", "Event Organization & Promotion", "Sports Goods & Equipment Supply", "Sports Education Programs", "Strategic Sponsorship"],
     quote: "Sport as Infrastructure for Human Development.",
-    image: "https://images.unsplash.com/photo-1587280501635-6cb10ee2c256?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=1200",
     accent: "#C9A227",
   },
   {
