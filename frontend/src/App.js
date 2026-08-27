@@ -36,7 +36,7 @@ function App() {
   };
 
   return (
-    <div className="bg-[#071A33] min-h-screen">
+    <div className="App relative bg-[#071A33] min-h-screen">
       <div className="grain-overlay" />
       <ScrollLines />
       <Toaster position="top-right" richColors theme="dark" />

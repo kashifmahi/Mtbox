@@ -1,57 +1,80 @@
+import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
-const LINE_H = 5200;
+const genPath = (x0, H) => {
+  let d = `M ${x0} 0`;
+  let y = 0;
+  let x = x0;
+  let dir = -1;
+  while (y < H) {
+    y += 460;
+    d += ` V ${y}`;
+    x += dir * 220;
+    y += 232;
+    d += ` L ${x} ${y}`;
+    y += 300;
+    d += ` V ${y}`;
+    dir *= -1;
+  }
+  return d;
+};
 
-const paths = [
-  {
-    d: `M 1100 0 C 400 700, 1500 1300, 800 2000 C 200 2600, 1400 3200, 700 3900 C 300 4400, 1200 4800, 900 ${LINE_H}`,
-    stroke: "#C9A227",
-    opacity: 0.28,
-    width: 1.5,
-    range: [-400, -2200],
-  },
-  {
-    d: `M 500 0 C 1300 600, 100 1400, 1000 2100 C 1600 2700, 500 3300, 1200 4000 C 1700 4500, 800 4900, 1100 ${LINE_H}`,
-    stroke: "#00B8D9",
-    opacity: 0.2,
-    width: 1.2,
-    range: [-200, -2900],
-  },
-  {
-    d: `M 1550 0 C 900 900, 1750 1700, 1150 2500 C 700 3100, 1650 3700, 1050 4400 C 750 4800, 1450 5000, 1250 ${LINE_H}`,
-    stroke: "#1557B0",
-    opacity: 0.3,
-    width: 1.8,
-    range: [-600, -1500],
-  },
+const lines = [
+  { x0: 252, color: "#C9A227", opacity: 0.55, end: 0.82 },
+  { x0: 282, color: "#00B8D9", opacity: 0.45, end: 0.9 },
+  { x0: 312, color: "#1557B0", opacity: 0.6, end: 0.98 },
 ];
 
-const Line = ({ p, progress }) => {
-  const y = useTransform(progress, [0, 1], p.range);
+const DrawnLine = ({ line, height, progress }) => {
+  const pathLength = useTransform(progress, [0, line.end], [0.06, 1]);
+  const d = genPath(line.x0, height);
   return (
-    <motion.svg
-      style={{ y }}
-      className="absolute left-0 top-0 w-full"
-      height={LINE_H}
-      viewBox={`0 0 1920 ${LINE_H}`}
-      preserveAspectRatio="xMidYMin slice"
-      fill="none"
-    >
-      <path d={p.d} stroke={p.stroke} strokeOpacity={p.opacity} strokeWidth={p.width} />
-      <path d={p.d} stroke={p.stroke} strokeOpacity={p.opacity * 0.35} strokeWidth={p.width * 5} style={{ filter: "blur(6px)" }} />
-    </motion.svg>
+    <>
+      <path d={d} stroke={line.color} strokeOpacity={line.opacity * 0.12} strokeWidth="7" style={{ filter: "blur(4px)" }} fill="none" />
+      <motion.path d={d} stroke={line.color} strokeOpacity={line.opacity} strokeWidth="2" fill="none" style={{ pathLength }} />
+    </>
   );
 };
 
 export const ScrollLines = () => {
+  const [height, setHeight] = useState(0);
   const { scrollYProgress } = useScroll();
-  const smooth = useSpring(scrollYProgress, { stiffness: 55, damping: 22, mass: 0.4 });
+  const smooth = useSpring(scrollYProgress, { stiffness: 60, damping: 20, mass: 0.3 });
+
+  useEffect(() => {
+    const measure = () => setHeight(document.documentElement.scrollHeight);
+    const t = setTimeout(measure, 500);
+    window.addEventListener("resize", measure);
+    const obs = new ResizeObserver(measure);
+    obs.observe(document.body);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", measure);
+      obs.disconnect();
+    };
+  }, []);
+
+  if (!height) return null;
 
   return (
-    <div className="fixed inset-0 z-[40] pointer-events-none overflow-hidden" data-testid="scroll-lines" aria-hidden="true">
-      {paths.map((p, i) => (
-        <Line key={i} p={p} progress={smooth} />
-      ))}
+    <div
+      className="absolute top-0 bottom-0 right-[4%] sm:right-[10%] lg:right-[16%] z-[15] pointer-events-none overflow-hidden"
+      data-testid="scroll-lines"
+      aria-hidden="true"
+      style={{ maskImage: "linear-gradient(to bottom, black 0%, black calc(100% - 700px), transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, black calc(100% - 700px), transparent 100%)" }}
+    >
+      <svg
+        width="340"
+        height={height}
+        viewBox={`0 0 340 ${height}`}
+        fill="none"
+        className="h-full w-[170px] sm:w-[260px] lg:w-[340px]"
+        preserveAspectRatio="xMaxYMin slice"
+      >
+        {lines.map((l) => (
+          <DrawnLine key={l.x0} line={l} height={height} progress={smooth} />
+        ))}
+      </svg>
     </div>
   );
 };

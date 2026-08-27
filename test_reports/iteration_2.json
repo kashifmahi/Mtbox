@@ -1,0 +1,28 @@
+{
+  "summary": "Frontend-only retest of the rewritten ScrollLines component (absolute in-flow zig-zag ribbon) on the public URL. MAIN BUG VERIFIED FIXED: [data-testid='scroll-lines'] is position:absolute, z-index 15, pointer-events:none, height 12120px == document.scrollHeight (12120), svg height attr 12120, contains 6 paths (3 blurred glow + 3 motion paths) with strokes #C9A227, #00B8D9, #1557B0. Container getBoundingClientRect().top moved 0 -> -5454 -> -11040 as scrollY went 0 -> 45% -> bottom, proving the lines scroll WITH content (not fixed). Draw-on-scroll confirmed: motion paths have pathLength=1 with stroke-dasharray '0.06px 1px' at top and '1px 1px' at bottom (framer-motion writes attributes, not inline style). No interaction blocking (hero-cta-explore elementFromPoint HIT + click, nav-link-approach scrolls, fintech-tab-merchants clickable, contact-submit-button works). Contact form e2e passed with success toast and record persisted in GET /api/contact (id da8ef881..., TEST_QA Lines). Zero console/page errors. All 6 images load (naturalWidth>0) after progressive scroll. Mobile 390x844: lines present (left 204, width 170), no horizontal overflow.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Contact + Footer (desktop 1920)", "issues": ["The blue/cyan zig-zag lines pass directly over the contact card's right edge and cross the footer 'CONTACT' nav link text, slightly reducing legibility. Consider lowering opacity or nudging right offset below the footer."]},
+      {"screen": "Platforms / Sports section", "issues": ["Lines overlay the sports stadium image and fintech tab row; acceptable per design but the gold line crosses the 'INSTITUTIONS' tab area."]},
+      {"screen": "Contact form", "issues": ["Placeholder text remains low-contrast grey on dark glass inputs (carried over from iteration_1)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx height measurement uses a 500ms setTimeout plus ResizeObserver on body; ResizeObserver on body will not fire for changes in absolutely-positioned/overlay content height — acceptable here, but consider observing documentElement or using a rAF-based re-measure to avoid stale SVG height on late-loading images (lazy images could grow the doc after 500ms).",
+    "Detection tip for future test agents: framer-motion pathLength renders as ATTRIBUTES stroke-dasharray/stroke-dashoffset with pathLength='1' — asserting on element.style.strokeDasharray gives false negatives.",
+    "Naive image assertion right after a jump-scroll reports naturalWidth=0 for loading='lazy' images; scroll progressively (~800px steps) before asserting."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "One contact inquiry 'TEST_QA Lines' (test_qa_lines@example.com) created via UI; no delete endpoint exists",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "None required",
+  "context_for_next_testing_agent": "ScrollLines is now absolute/in-flow spanning full doc height (12120px at 1920x1080). Wait 2-3s after load (returns null until measured) and ~2-3s after scrollTo for the useSpring to settle. Assert draw progress via path getAttribute('stroke-dasharray'). Contact testids: contact-input-name/email/company/message, contact-select-interest, contact-submit-button. Lenis smooth scroll active. Only remaining findings are cosmetic overlap of lines over contact/footer text.",
+  "rca_of_the_issue": "Previous fixed-position parallax layer did not move with content, so the user perceived the lines as missing/static. The rewrite to an absolute overlay sized to document.scrollHeight makes the lines translate with the page on scroll — verified by the container's viewport-relative top changing 1:1 with scrollY."
+}
