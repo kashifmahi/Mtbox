@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only verification of the 4th ScrollLines fix (exact 1:1 scroll speed + red middle line). ALL requested checks PASS. (1) SPEED: computed transform of the inner motion div inside [data-testid='scroll-lines'] matches -1704 - (scrollY % 1704) with delta 0.00px at every sampled position: scrollY 0 -> -1704, 400 -> -2104, 800 -> -2504, 3000 -> -3000, 1600 -> -3304, 1800 -> -1800, 5000 -> -3296. tx stays 0 (pure vertical stream). No lag/spring: a window.scrollBy(0,200) moved translateY by exactly -200.0px when read only 120ms later. (2) RED LINE: SVG has exactly 3 <g> groups / 6 paths with distinct strokes ['#C9A227','#E81C2C','#00B8D9']; red middle line clearly visible in screenshots (hero/why-mbtex and contact/footer crops). (3) SEAMLESS WRAP: 10px-step sweep 1650->1770 gives ty -3354,-3364,...,-3404 then wraps to -1710,-1720,... i.e. exactly -CYCLE at the boundary, 0 mismatches vs the formula; because the zig-zag pattern repeats every 1704px this wrap is visually continuous. (4) REGRESSION: layer is position:fixed, z-index 5, pointer-events:none; z-order verified programmatically at scrollY=2000 by temporarily enabling pointer-events on the layer, scanning a 900-1800 x 80-1000 grid (2809 line hits) and re-querying elementFromPoint with the layer hidden -> 0 points where a line paints above any text-owning node, IMG, BUTTON, INPUT, TEXTAREA or A. Zero console/page errors across all 3 runs. Contact form e2e: fill name/email(@example.com)/message -> contact-submit-button -> POST /api/contact 200 -> sonner success toast 'Thank you. Your inquiry has been received - we will be in touch.' within ~0.4s -> form fields reset.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Contact / footer (1920x1080)", "issues": ["Cosmetic only: at the contact section the 3 lines pass directly through the semi-transparent form card, so faint gold/red/cyan strokes are visible through the card surface behind the inputs. Legibility is unaffected (no stroke over glyphs) but it slightly reduces the card's solidity if a cleaner look is desired."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx: CYCLE=1704 and the 380/232/240 segment lengths are magic numbers that must stay in sync (380+232+240 = 852 = CYCLE/2). Consider deriving CYCLE from the segment constants so a future tweak to the zig-zag geometry cannot silently break the seamless wrap.",
+    "The layer starts at translateY=-1704 with H=CYCLE*4=6816, so on viewports taller than ~5112px (e.g. full-page screenshot contexts / very tall displays) the pattern could run out below the fold; not reproducible at 1920x1080."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (POST /api/contact exercised via UI, 200)", "frontend": "100% of tested flows"},
+  "seed_data_creation": "Two contact inquiries created via UI: TEST_QA_Lines4 / qa_lines4@example.com and TEST_QA_Lines4b / qa_lines4b@example.com.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Correct contact field testids are contact-input-name / contact-input-email / contact-input-company / contact-select-interest / contact-input-message / contact-submit-button (NOT contact-name-input). Success toast auto-dismisses in <4.5s - poll for the toast text every 400ms instead of a single long wait. ScrollLines now has NO spring: read transform ~100-300ms after window.scrollTo; formula translateY = -1704 - (scrollY % 1704), translateX always 0. Z-order technique from iteration_3 (pointer-events toggle + visibility hide) still works and was reused successfully.",
+  "rca_of_the_issue": "No defects. The single initial 'FAIL contact form' in run 1 was a test-script issue (wrong data-testid names) and in run 2 a timing artifact (toast already auto-dismissed after a 4.5s blind wait); both were corrected in the test script and the flow passed."
+}
