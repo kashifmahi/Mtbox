@@ -28,7 +28,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Grain overlay, gold selection/scrollbar, micro-interactions throughout
 
 ## Backlog / Next
-- P1: Real contact details + logo when user provides them
+- Branding: official MBtex Group logo (user-provided) integrated in navbar + footer; black background removed programmatically (alpha unmatting + noise threshold), stored at /app/frontend/public/mbtex-logo.png
 - P1: Team/company history section (placeholder in write-up)
 - P2: Multi-page expansion (dedicated platform pages), newsletter capture
 - P2: Admin view of contact inquiries

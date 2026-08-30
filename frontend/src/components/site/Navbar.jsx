@@ -35,9 +35,8 @@ export const Navbar = ({ onNavigate }) => {
       data-testid="main-navbar"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
-        <button onClick={() => go("#hero")} className="flex items-baseline gap-1.5" data-testid="navbar-logo">
-          <span className="font-serif-display text-3xl font-semibold text-white tracking-tight">MBtex</span>
-          <span className="font-grotesk text-xs uppercase tracking-[0.3em] text-[#C9A227]">Group</span>
+        <button onClick={() => go("#hero")} className="flex items-center" data-testid="navbar-logo">
+          <img src="/mbtex-logo.png" alt="MBtex Group — Make It Happen" className="h-12 w-auto" />
         </button>
 
         <nav className="hidden lg:flex items-center gap-10">
