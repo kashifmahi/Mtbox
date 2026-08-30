@@ -10,7 +10,7 @@ const steps = [
 
 export const Approach = () => (
   <section id="approach" className="bg-[#F3F6F9] py-28 md:py-40" data-testid="approach-section">
-    <div className="max-w-7xl mx-auto px-6 lg:px-10">
+    <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
       <SectionHeader overline="Our Approach" title="Think Globally. Build Strategically. Execute Responsibly." dark={false} />
       <Reveal className="max-w-2xl -mt-8 mb-16 font-serif-display italic text-lg md:text-xl text-[#071A33]/70">
         Every opportunity begins with a question: can we create sustainable value by bringing together

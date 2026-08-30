@@ -12,10 +12,8 @@ const cards = [
 
 export const WhyMbtex = () => (
   <section id="why-mbtex" className="bg-[#F3F6F9] py-28 md:py-40" data-testid="why-mbtex-section">
-    <div className="max-w-7xl mx-auto px-6 lg:px-10">
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-4">
-        <SectionHeader overline="Why MBtex Group" title="One Group. Multiple Platforms. Global Reach." dark={false} />
-      </div>
+    <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
+      <SectionHeader overline="Why MBtex Group" title="One Group. Multiple Platforms. Global Reach." dark={false} />
       <Reveal className="max-w-2xl -mt-8 mb-16 text-[#071A33]/60 leading-relaxed text-sm md:text-base">
         In an increasingly interconnected global economy, opportunities rarely exist within a single
         sector. A real estate project may require financial technology. A city requires infrastructure,

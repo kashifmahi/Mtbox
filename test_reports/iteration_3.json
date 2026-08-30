@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only verification of the 3rd ScrollLines implementation (fixed viewport background layer with horizontal scroll-driven movement) on the MBtex landing page, plus full interaction/regression sweep. All 4 requested feature areas PASS. ScrollLines is position:fixed, z-index 5, pointer-events:none, contains exactly 3 <g> line groups (6 paths: blur + crisp). Inner motion div translateX increases monotonically with scrollY (tx: -499.2px @ scrollY 0 -> +27.6px @ 6074 -> +460.8px @ 11068, with y drift 0 -> -900), i.e. lines move left-to-right on scroll down as requested. Z-order verified programmatically at 8 scroll positions (hero, marquee/who, why-light, platforms, approach, values, contact, footer) by temporarily enabling pointer-events on the layer and comparing elementFromPoint with/without the layer: 0 points where a line paints above any text node owner, image, card, button or form control; lines only paint above plain section backgrounds (expected). Confirmed visually with a zoomed crop of WhyMbtex: lines pass behind headline/paragraph glyphs and disappear behind white bento cards. No layout breakage after the z-index refactor: hero 1080px, who-we-are 1200, why-mbtex 1315, what-we-do 4916, approach 846 (5 numbered steps 01-05 rendered), values 1518, contact 817, footer present; marquee track transform changes over time (scrolling). Interactions: hero-cta-explore scrolls (scrollY 3636), all 4 navbar links land on target (target top = 60px, matching the -60 Lenis offset), 5 footer links clickable, fintech tab 'merchants' switches content, mobile menu opens at 390px with no horizontal overflow. Contact form e2e: fill name/email/interest/message -> submit -> sonner success toast 'Thank you. Your inquiry has been received' -> form reset -> record persisted and returned by GET /api/contact (200, match=1). Zero console/page errors in every run.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/contact", "issue": "Not a defect, noted for future testers: pydantic EmailStr rejects special-use TLDs (e.g. *@example.test) with 422; use @example.com in test data. UI correctly shows the generic error toast in that case."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global (ScrollLines)", "issues": ["Cosmetic/subjective only: the 3 lines sit almost entirely in the right half of the viewport at mid/late scroll (translateX up to +460px) so on wide 1920px screens they often sit outside the 1273px content column and read as a right-edge decoration rather than crossing the content. If the iicbank look requires the lines to sweep across the content column, widen the x range or shift the group's right offset."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx: y drift is a hardcoded -900px while the SVG height H is a fixed 2600 and the doc is ~12148px tall; on much shorter/taller viewports the zig-zag pattern can run out of vertical coverage. Consider deriving H/y from viewport height for robustness (not currently visible as a defect at 1920x1080 or 390x844).",
+    "Contact.jsx submit handler shows a generic 'Something went wrong' toast for all failures; surfacing the backend 422 field message would improve UX for invalid emails."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (contact POST/GET exercised via UI + curl)", "frontend": "100% of tested flows"},
+  "seed_data_creation": "One contact inquiry created via UI: TEST_QA_Lines3 / qa_lines3@example.com (persisted in contact_inquiries).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Reliable technique for z-order verification: the layer has pointer-events:none, so elementFromPoint NEVER returns it -> a naive check trivially 'passes'. Temporarily set layer.style.pointerEvents='auto' + path.style.pointerEvents='stroke', find points where elementFromPoint returns the layer, then set layer.style.visibility='hidden' and re-query to identify the element underneath; only flag when that element owns text / is IMG/BUTTON/INPUT/card. Wait ~2.2-2.5s after window.scrollTo for the useSpring to settle (Lenis is active but window.scrollTo works). Correct submit selector is contact-submit-button (not contact-submit). Section anchor ids: hero, who-we-are, why-mbtex, what-we-do, approach, values, contact; footer is only data-testid=site-footer (no id).",
+  "rca_of_the_issue": "No defects found in this iteration. The only 422 seen came from test data (@example.test is a reserved TLD rejected by email-validator), reproduced via curl and confirmed as expected validation behavior, not an app bug."
+}
