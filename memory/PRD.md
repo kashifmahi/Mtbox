@@ -30,7 +30,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Grain overlay, gold selection/scrollbar, micro-interactions throughout
 
 ## Backlog / Next
-- Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; older PNG kept as fallback asset
+- Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; its globe section replaced with the previous globe (tab-icon art, base64-embedded raster) per user request; older PNG kept as fallback asset
 - Favicon branding: logo globe extracted onto navy circle (favicon.ico/png + apple-touch-icon), page title "MBtex Group — Building Platforms. Connecting Markets.", theme-color #071A33
 - P1: Team/company history section (placeholder in write-up)
 - P2: Multi-page expansion (dedicated platform pages), newsletter capture
