@@ -25,9 +25,10 @@ const genPath = (x0) => {
 };
 
 const lines = [
-  { d: genPath(40), color: "#E81C2C", opacity: 0.55 },
-  { d: genPath(75), color: "#C9A227", opacity: 0.5 },
-  { d: genPath(110), color: "#E81C2C", opacity: 0.65 },
+  { d: genPath(40), color: "#E81C2C", opacity: 0.6 },
+  { d: genPath(75), color: "#E81C2C", opacity: 0.6 },
+  { d: genPath(110), color: "#C9A227", opacity: 0.55 },
+  { d: genPath(145), color: "#C9A227", opacity: 0.55 },
 ];
 
 export const ScrollLines = () => {

@@ -1,5 +1,5 @@
 export const Footer = ({ onNavigate }) => (
-  <footer className="bg-[#071A33] border-t border-[#C9A227]/20" data-testid="site-footer">
+  <footer className="relative z-10 bg-[#071A33] border-t border-[#C9A227]/20" data-testid="site-footer">
     <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-16">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-12">
         <div>
