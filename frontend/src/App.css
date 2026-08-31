@@ -183,22 +183,26 @@ body {
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.3) !important;
 }
 
-@property --dashloop {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 1;
-}
-
-@keyframes lineflow {
+/* Dash-travel animation: pathLength="1000" normalizes every path,
+   so dasharray/dashoffset are in per-mille units of the path length.
+   One full keyframe cycle (1000 -> 0) shifts the dash pattern exactly
+   one period forward, making the dashes visibly travel along the curve. */
+@keyframes dash-travel {
   from {
-    --dashloop: 1;
+    stroke-dashoffset: 1000;
   }
   to {
-    --dashloop: 0;
+    stroke-dashoffset: 0;
   }
 }
 
 .flow-line {
-  stroke-dashoffset: calc(var(--dashloop) * var(--len, 0) * 1px + var(--scrolloff, 0px));
+  stroke-dasharray: 420 180;
+  stroke-dashoffset: 1000;
+  animation: dash-travel 9s linear infinite;
   will-change: stroke-dashoffset;
 }
+.flow-line-0 { animation-duration: 8s; animation-delay: 0s; }
+.flow-line-1 { animation-duration: 10s; animation-delay: -2.5s; }
+.flow-line-2 { animation-duration: 12s; animation-delay: -5s; }
+.flow-line-3 { animation-duration: 14s; animation-delay: -7.5s; }
