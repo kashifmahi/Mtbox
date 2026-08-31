@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const toPath = (rawPts, r = 34) => {
   const pts = rawPts.filter(
@@ -53,6 +57,7 @@ const colors = [
 
 export const ScrollLines = () => {
   const [dims, setDims] = useState(null);
+  const ref = useRef(null);
   const { scrollYProgress } = useScroll();
   const smooth = useSpring(scrollYProgress, { stiffness: 65, damping: 22, mass: 0.4 });
   const mobile = dims && dims.w < 640;
@@ -75,6 +80,37 @@ export const ScrollLines = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!dims || !ref.current) return;
+    const paths = ref.current.querySelectorAll("path.flow-line");
+    const tweens = [];
+    paths.forEach((p, i) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = `${len * 0.55} ${len * 0.45}`;
+      p.style.setProperty("--len", len);
+      p.style.setProperty("--scrolloff", "0px");
+      p.style.animation = `lineflow ${14 + i * 3.5}s linear infinite`;
+      p.style.animationDelay = `${-i * 4.2}s`;
+      tweens.push(
+        gsap.to(p, {
+          "--scrolloff": `${-len}px`,
+          ease: "none",
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true,
+          },
+        })
+      );
+    });
+    return () =>
+      tweens.forEach((tw) => {
+        if (tw.scrollTrigger) tw.scrollTrigger.kill();
+        tw.kill();
+      });
+  }, [dims]);
+
   if (!dims) return null;
   const { h: H } = dims;
   const diag = mobile ? 110 : 222;
@@ -82,15 +118,15 @@ export const ScrollLines = () => {
   const base = genWaypoints(H, diag, mobile ? 300 : 460, mobile ? 200 : 300);
 
   return (
-    <div className="absolute inset-0 z-[5] pointer-events-none overflow-hidden" data-testid="scroll-lines" aria-hidden="true">
+    <div ref={ref} className="absolute inset-0 z-[5] pointer-events-none overflow-hidden" data-testid="scroll-lines" aria-hidden="true">
       <motion.div style={{ x }} className="absolute top-0 bottom-0 left-[4%]">
         <svg width={ribbonW} height={H} viewBox={`0 0 ${ribbonW} ${H}`} fill="none" className="h-full">
           {colors.map((c, i) => {
             const d = toPath(base.map(([px, py]) => [px + i * gap + 1, py]));
             return (
               <g key={i}>
-                <path d={d} stroke={c.color} strokeOpacity={c.opacity * 0.14} strokeWidth="7" style={{ filter: "blur(4px)" }} />
-                <path d={d} stroke={c.color} strokeOpacity={c.opacity} strokeWidth="2" />
+                <path d={d} fill="none" stroke={c.color} strokeOpacity={c.opacity * 0.14} strokeWidth="7" style={{ filter: "blur(4px)" }} />
+                <path d={d} fill="none" className="flow-line" stroke={c.color} strokeOpacity={c.opacity} strokeWidth="2" />
               </g>
             );
           })}

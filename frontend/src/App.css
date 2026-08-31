@@ -182,3 +182,23 @@ body {
   border-color: var(--gold) !important;
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.3) !important;
 }
+
+@property --dashloop {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+@keyframes lineflow {
+  from {
+    --dashloop: 1;
+  }
+  to {
+    --dashloop: 0;
+  }
+}
+
+.flow-line {
+  stroke-dashoffset: calc(var(--dashloop) * var(--len, 0) * 1px + var(--scrolloff, 0px));
+  will-change: stroke-dashoffset;
+}
