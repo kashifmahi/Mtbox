@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="App relative bg-[#071A33] min-h-screen">
       <div className="grain-overlay" />
-      <Toaster position="top-right" richColors theme="dark" />
+      <Toaster position="top-right" richColors theme="dark" offset={{ top: 96 }} />
       <Navbar onNavigate={navigate} />
       <main>
         <Hero onNavigate={navigate} />
