@@ -10,8 +10,9 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Geometric line backgrounds throughout the site
 
 ## Architecture
-- Frontend: React (CRA + craco), Tailwind, framer-motion, lenis smooth scroll, react-fast-marquee, @phosphor-icons/react, shadcn Tabs, sonner toasts
-- Backend: FastAPI + MongoDB (motor). Endpoints: POST /api/contact, GET /api/contact
+- Frontend: React 19 + VITE 8 (migrated from CRA/craco June 2026) — vite.config.js with @ alias, envPrefix REACT_APP_, port 3000, allowedHosts, hmr clientPort 443; entry src/main.jsx, root index.html; Tailwind, framer-motion, lenis, react-fast-marquee, @phosphor-icons/react, shadcn Tabs, sonner
+- Backend: NODE.JS Express (migrated from FastAPI June 2026) — /app/backend/server.js (ESM, express + mongodb driver + cors + dotenv) on port 8002 with all API logic (GET /api/, POST /api/contact with email validation, GET /api/contact). PLATFORM CONSTRAINT: supervisor conf is read-only and pins uvicorn to port 8001, so server.py is now a thin httpx ASGI proxy 8001→8002; Node runs as supervisor program `backend-node` (/etc/supervisor/conf.d/node_backend.conf)
+- MongoDB via MONGO_URL/DB_NAME env (unchanged)
 - Fonts: Cormorant Garamond (display), Cabinet Grotesk (overlines/UI), Manrope (body)
 
 ## Implemented (June 2026)

@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only verification of rebuilt hero ScrollLines (iteration 10). Independently validated all 5 acceptance items on the public preview URL at 1920x800 and 1366x768. ACCEPTANCE 1 PASS: [data-testid='scroll-lines'] contains exactly 8 paths (4 base + 4 glow), base/glow 'd' attributes match pairwise, base computed styles = stroke-dasharray 'none', opacity 0.25, stroke-width 1.5px -> curves always continuous (screenshots confirm 4 unbroken ribbons). ACCEPTANCE 2 PASS: glow paths computed dasharray '220px, 780px', stroke-linecap round, animation-name 'flow', durations 9s/11s/13s/15s, delays 0s/-3s/-6s/-9s; sampled stroke-dashoffset became more negative over 2.2s for all 4 lines (t0 [-261,-486,-642,-757] -> t2 [-506,-686,-812,-903]); screenshots 2s apart show bright segments advanced rightward. ACCEPTANCE 3 PASS: 201-point geometric sampling of all 4 base paths (getPointAtLength mapped through svg getBoundingClientRect with preserveAspectRatio=none scaling) yielded crossHeading=0 and crossParagraph=0 at both 1920x800 and 1366x768 (h1 rect bottom 401px vs topmost line y=712px at x=0 and y=389px only at the far right edge x=1920, outside h1 right edge 1560 at 1920 width... verified numerically zero intersections). LAYOUT PASS: wrapper position absolute, z-index 0, pointer-events none, spans hero; hero content z-10 above lines; [data-testid='hero-cta-explore'] clicked successfully with a normal (non-forced) click. NO REGRESSIONS: zero console errors / pageerrors, page scrolled to bottom, #contact present and visible.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Hero (1920x800)", "issues": ["Cosmetic only, not a spec violation: the lower two ribbons pass behind the [data-testid='hero-stats'] row (sampled y ~790-829 at x=0) and the svg box (height 889px) extends slightly past the 800px viewport, so the lowest ribbon's left end is partly below the fold. Base strokes at opacity 0.25 are very faint against #071A33 - intentional per spec but nearly invisible in screenshots until the glow segment passes."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx is clean and declarative; line defs, base/glow pairing and pathLength=1000 match the spec exactly. No changes needed.",
+    "Optional: if the ribbons should never overlap the stats row either, shift the two lowest curves' start y from 710/745 upward or reduce hero svg height; purely aesthetic."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Hero ScrollLines rebuild fully verified at 1920x800 and 1366x768: 8 paths, base solid (dasharray none/0.25/1.5), glow flow animation 9/11/13/15s with 0/-3/-6/-9s delays, dashoffset progressing negative, zero geometric intersections with h1 or hero-subtext, wrapper abs/z0/pointer-events-none, CTAs clickable, no console errors, contact section renders. Contact form/tabs intentionally not retested per request. Only remaining nit is cosmetic overlap of the two lowest ribbons with the hero-stats row.",
+  "rca_of_the_issue": "Original bug (dashed lines crossing/cutting the headline) is resolved by two mechanisms verified here: (1) each line renders a permanently solid base path so the dash animation can no longer break the curve, and (2) the curve control points were moved into the lower-left-to-right band, geometrically below the h1 and subtext rects at tested viewports."
+}
