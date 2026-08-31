@@ -17,7 +17,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 
 ## Implemented (June 2026)
 - Bug fixes: replaced 404 stadium image; ScrollLines FINAL (matches iicbank mechanism, verified by live inspection of reference): absolute in-document 4-line zig-zag ribbon (2 red #E81C2C + 2 gold #C9A227, 30px gaps, 45° diagonals, rounded corners, NaN-guarded path builder) spanning full document height + scroll-linked container translateX (spring, 0→~1400px) so the whole ribbon glides left→right while scrolling; behind content (z-5), footer z-10 covers. Verified by testing agent (iterations 5-9: 100% pass)
-- Line stroke animation CURRENT (restored per user request, on Vite+Node): full-document 4-line zig-zag ribbon (2 red/2 gold, rounded Q corners, 30px gaps) mounted in App.jsx, absolute z-5 behind content; pathLength="1000" + dasharray 420/180 + dash-travel keyframes (1000→0, 8/10/12/14s staggered) so dashes travel along the curves; framer spring translateX glide (0→~1400px) with scroll. Hero-scoped base+glow ribbon version (iteration_11) was reverted.
+- ScrollLines REMOVED entirely (user request, June 2026): component deleted, unmounted from App.jsx, dash-travel CSS removed. Static GeometricBackground SVG patterns (hero circles/grids) remain.
 - Kinetic hero: masked line-by-line reveal, parallax geometric circles, stats row, scroll cue
 - Sticky glassmorphic navbar with lenis anchor navigation + mobile menu
 - Slow editorial marquee of the five platforms

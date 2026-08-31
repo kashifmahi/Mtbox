@@ -182,27 +182,3 @@ body {
   border-color: var(--gold) !important;
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.3) !important;
 }
-
-/* Dash-travel animation: pathLength="1000" normalizes every path,
-   so dasharray/dashoffset are in per-mille units of the path length.
-   One full keyframe cycle (1000 -> 0) shifts the dash pattern exactly
-   one period forward, making the dashes visibly travel along the curve. */
-@keyframes dash-travel {
-  from {
-    stroke-dashoffset: 1000;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.flow-line {
-  stroke-dasharray: 420 180;
-  stroke-dashoffset: 1000;
-  animation: dash-travel 9s linear infinite;
-  will-change: stroke-dashoffset;
-}
-.flow-line-0 { animation-duration: 8s; animation-delay: 0s; }
-.flow-line-1 { animation-duration: 10s; animation-delay: -2.5s; }
-.flow-line-2 { animation-duration: 12s; animation-delay: -5s; }
-.flow-line-3 { animation-duration: 14s; animation-delay: -7.5s; }

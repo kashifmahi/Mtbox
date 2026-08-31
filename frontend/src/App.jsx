@@ -3,7 +3,6 @@ import "@/App.css";
 import Lenis from "lenis";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/site/Navbar";
-import { ScrollLines } from "@/components/site/ScrollLines";
 import { Hero } from "@/components/site/Hero";
 import { EditorialMarquee } from "@/components/site/EditorialMarquee";
 import { WhoWeAre } from "@/components/site/WhoWeAre";
@@ -38,7 +37,6 @@ function App() {
   return (
     <div className="App relative bg-[#071A33] min-h-screen">
       <div className="grain-overlay" />
-      <ScrollLines />
       <Toaster position="top-right" richColors theme="dark" offset={{ top: 96 }} />
       <Navbar onNavigate={navigate} />
       <main>
