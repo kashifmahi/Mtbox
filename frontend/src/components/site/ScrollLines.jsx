@@ -1,49 +1,62 @@
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-const CYCLE = 1704;
+const CYCLE = 1300;
 const H = CYCLE * 4;
+const VB_W = 560;
 
 const genPath = (x0) => {
   let d = `M ${x0} 0`;
   let y = 0;
   let x = x0;
-  let dir = -1;
   while (y < H) {
-    y += 380;
+    y += 120;
     d += ` V ${y}`;
-    x += dir * 220;
-    y += 232;
+    x += 400;
+    y += 900;
     d += ` L ${x} ${y}`;
-    y += 240;
+    y += 120;
     d += ` V ${y}`;
-    dir *= -1;
+    x -= 400;
+    y += 160;
+    d += ` L ${x} ${y}`;
   }
   return d;
 };
 
 const lines = [
-  { x0: 252, color: "#C9A227", opacity: 0.5 },
-  { x0: 282, color: "#E81C2C", opacity: 0.6 },
-  { x0: 312, color: "#00B8D9", opacity: 0.45 },
+  { d: genPath(40), color: "#E81C2C", opacity: 0.55 },
+  { d: genPath(75), color: "#C9A227", opacity: 0.5 },
+  { d: genPath(110), color: "#E81C2C", opacity: 0.65 },
 ];
 
 export const ScrollLines = () => {
+  const ref = useRef(null);
+  const [scale, setScale] = useState(1);
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, (v) => -CYCLE - (v % CYCLE));
+
+  useEffect(() => {
+    const measure = () => ref.current && setScale(ref.current.getBoundingClientRect().width / VB_W);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const y = useTransform(scrollY, (v) => {
+    const c = CYCLE * scale;
+    return -c - (v % c);
+  });
 
   return (
     <div className="fixed inset-0 z-[5] pointer-events-none overflow-hidden" data-testid="scroll-lines" aria-hidden="true">
-      <motion.div style={{ y }} className="absolute top-0 right-[22%] w-[170px] sm:w-[260px] lg:w-[340px]">
-        <svg width="340" height={H} viewBox={`0 0 340 ${H}`} fill="none" className="w-full h-auto">
-          {lines.map((l) => {
-            const d = genPath(l.x0);
-            return (
-              <g key={l.x0}>
-                <path d={d} stroke={l.color} strokeOpacity={l.opacity * 0.14} strokeWidth="7" style={{ filter: "blur(4px)" }} />
-                <path d={d} stroke={l.color} strokeOpacity={l.opacity} strokeWidth="2" />
-              </g>
-            );
-          })}
+      <motion.div ref={ref} style={{ y }} className="absolute top-0 right-[6%] sm:right-[12%] lg:right-[18%] w-[280px] sm:w-[420px] lg:w-[560px]">
+        <svg width={VB_W} height={H} viewBox={`0 0 ${VB_W} ${H}`} fill="none" className="w-full h-auto">
+          {lines.map((l) => (
+            <g key={l.d}>
+              <path d={l.d} stroke={l.color} strokeOpacity={l.opacity * 0.14} strokeWidth="7" style={{ filter: "blur(4px)" }} />
+              <path d={l.d} stroke={l.color} strokeOpacity={l.opacity} strokeWidth="2" />
+            </g>
+          ))}
         </svg>
       </motion.div>
     </div>

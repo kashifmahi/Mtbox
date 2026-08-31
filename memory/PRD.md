@@ -15,7 +15,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Fonts: Cormorant Garamond (display), Cabinet Grotesk (overlines/UI), Manrope (body)
 
 ## Implemented (June 2026)
-- Bug fixes: replaced 404 stadium image (chapter 03); ScrollLines final — FIXED background layer, 3 zig-zag lines (gold #C9A227, red #E81C2C per logo, cyan #00B8D9) streaming at EXACT 1:1 scroll speed via translateY = -1704 - (scrollY % 1704), seamless wrap, always behind content. Verified by testing agent (iteration_4: 100% pass)
+- Bug fixes: replaced 404 stadium image (chapter 03); ScrollLines final — FIXED background layer, 3 sawtooth lines (2 red #E81C2C + 1 gold #C9A227) with long diagonals so scrolling down sweeps them left→right at exact 1:1 scroll speed, scale-aware seamless wrap on all breakpoints, always behind content. Verified by testing agent (iteration_5) + scale-fix self-verified
 - Kinetic hero: masked line-by-line reveal, parallax geometric circles, stats row, scroll cue
 - Sticky glassmorphic navbar with lenis anchor navigation + mobile menu
 - Slow editorial marquee of the five platforms

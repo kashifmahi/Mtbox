@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only verification of ScrollLines fix (2 red + 1 gold sawtooth, left-to-right sweep). Measured line geometry programmatically (path.getPointAtLength + motion-div getBoundingClientRect => screen coords, crossings at fixed y=300) across scrollY 0..1200 on desktop 1920x1080. All 4 requested checks pass on desktop: colors exactly 2x #E81C2C + 1x #C9A227 (3 g groups, 6 paths: glow+solid each, no blue/cyan), translateY exactly -1300-(scrollY%1300) at every sampled scroll offset (1:1), x at y=300 increases (moves right) in 5/6 steps with one expected snap-back per 1300px cycle (1136->1223->1313->1402->1454 -> [wrap] 1054->1090), layer fixed z-index 5 pointer-events:none behind content (all elementFromPoint hits resolve to content, not the layer), all 5 sections render, zero console/page errors, contact form e2e submitted with qa.tester@example.com and success message appeared.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ScrollLines", "issue": "Wrap is NOT seamless at tablet widths (sm/md, 768px): svg is rendered at w-[420px] so viewBox scale = 0.75 and the pattern cycle is 975 CSS px, while translateY wraps every 1300 CSS px (1300/975 = 1.33, non-integer). Measured x at y=300 jumps 350 -> 528 exactly at the scrollY 1299 -> 1310 boundary (a hard visual jump, distinct from the intended in-cycle sawtooth snap). Mobile 390px (scale 0.5, 1300/650 = 2) and desktop lg (scale 1.0) are seamless.", "selector": "[data-testid='scroll-lines'] > div", "priority": "MEDIUM"},
+      {"component": "ScrollLines", "issue": "Scroll-to-pattern speed is not 1:1 below lg because translateY is in CSS px while the SVG is scaled: at 768px lines stream at 0.75x of scroll, at 390px at 0.5x. Consider deriving the translate from the measured scale (or use a viewBox-independent px-sized svg) if exact 1:1 is required on all breakpoints.", "selector": "[data-testid='scroll-lines']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Sawtooth pattern (desktop)", "issues": ["The short return diagonal (L -400 over dy 160) is a steep, near-horizontal-ish sweep that briefly reads as fast right-to-left motion once per cycle; on the light/white section it is high-contrast and quite noticeable (see full-page screenshot at scrollY 1500). Acceptable per spec but could be softened (lower opacity on the return leg or longer return dy) if the client dislikes the flick-back."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix non-seamless wrap at sm/md breakpoints: make CYCLE translate scale-aware (e.g., translate by CYCLE * (renderedWidth/560)) or keep svg width fixed at 560 across breakpoints so scale stays 1."
+  ],
+  "critical_code_review_comments": [
+    "ScrollLines.jsx: translateY uses raw CYCLE px but the svg is responsively scaled (w-[280px]/[420px]/[560px] on a 560 viewBox); the px<->viewBox unit mismatch breaks both the 1:1 speed claim and the seamless wrap on non-lg breakpoints.",
+    "genPath is recomputed inside render for every line on every re-render; memoize (useMemo/module-level constant) since paths are static."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested", "frontend": "100% on desktop (4/4 requested checks); 1 breakpoint-specific defect on tablet"},
+  "seed_data_creation": "Contact form submission created with name 'QA Tester', email qa.tester@example.com",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Reliable measurement technique: get [data-testid='scroll-lines'] firstElementChild rect, scale = rect.width/560, then for each stroke-width=2 path sample getPointAtLength and map to screen via rect.left + p.x*scale / rect.top + p.y*scale; collect crossings of a fixed screen y. This avoids pointer-events hacks. Desktop direction/colors/speed/layering all verified in iteration 5; only the sm/md (768px) wrap seam remains open.",
+  "rca_of_the_issue": "Root cause of tablet seam: motion div translateY is expressed in CSS pixels equal to the viewBox cycle (1300), but the svg scales to the container width (560 viewBox -> 420 px at sm, 280 px at md/mobile). The rendered cycle length becomes 975 px at scale 0.75, so a 1300 px wrap does not land on a cycle boundary and produces a visible discontinuity every 1300 px of scroll."
+}
