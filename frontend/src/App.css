@@ -183,23 +183,26 @@ body {
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.3) !important;
 }
 
-/* Hero ribbon lines: base path is always solid (continuous);
-   the glow path shows one bright 220/1000 segment gliding
-   left-to-right via stroke-dashoffset 0 -> -1000. */
-@keyframes flow {
+/* Dash-travel animation: pathLength="1000" normalizes every path,
+   so dasharray/dashoffset are in per-mille units of the path length.
+   One full keyframe cycle (1000 -> 0) shifts the dash pattern exactly
+   one period forward, making the dashes visibly travel along the curve. */
+@keyframes dash-travel {
+  from {
+    stroke-dashoffset: 1000;
+  }
   to {
-    stroke-dashoffset: -1000;
+    stroke-dashoffset: 0;
   }
 }
 
-.hero-line-glow {
-  stroke-dasharray: 220 780;
-  stroke-dashoffset: 0;
-  stroke-linecap: round;
-  animation: flow 9s linear infinite;
+.flow-line {
+  stroke-dasharray: 420 180;
+  stroke-dashoffset: 1000;
+  animation: dash-travel 9s linear infinite;
   will-change: stroke-dashoffset;
 }
-.hero-line-glow-0 { animation-duration: 9s; animation-delay: 0s; }
-.hero-line-glow-1 { animation-duration: 11s; animation-delay: -3s; }
-.hero-line-glow-2 { animation-duration: 13s; animation-delay: -6s; }
-.hero-line-glow-3 { animation-duration: 15s; animation-delay: -9s; }
+.flow-line-0 { animation-duration: 8s; animation-delay: 0s; }
+.flow-line-1 { animation-duration: 10s; animation-delay: -2.5s; }
+.flow-line-2 { animation-duration: 12s; animation-delay: -5s; }
+.flow-line-3 { animation-duration: 14s; animation-delay: -7.5s; }
