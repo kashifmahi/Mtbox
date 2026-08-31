@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { GeometricBackground } from "./GeometricBackground";
+import { ScrollLines } from "./ScrollLines";
 import { ArrowDown } from "@phosphor-icons/react";
 
 const lines = ["Building Platforms.", "Connecting Markets.", "Creating Sustainable Growth."];
@@ -36,6 +37,7 @@ export const Hero = ({ onNavigate }) => {
         style={{ backgroundImage: "url(https://images.pexels.com/photos/38967250/pexels-photo-38967250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)" }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#071A33] via-transparent to-[#071A33]/60" />
+      <ScrollLines />
 
       <motion.div style={{ y: yText, opacity }} className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full pt-32 pb-20">
         <motion.div
