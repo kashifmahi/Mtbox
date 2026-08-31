@@ -36,7 +36,7 @@ export const Navbar = ({ onNavigate }) => {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
         <button onClick={() => go("#hero")} className="flex items-center" data-testid="navbar-logo">
-          <img src="/mbtex-logo.png" alt="MBtex Group — Make It Happen" className="h-12 w-auto" />
+          <img src="/mbtex-group-horizontal-vector.svg" alt="MBtex Group — Make It Happen" className="h-12 w-auto" />
         </button>
 
         <nav className="hidden lg:flex items-center gap-10">

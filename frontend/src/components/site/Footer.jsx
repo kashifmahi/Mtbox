@@ -3,7 +3,7 @@ export const Footer = ({ onNavigate }) => (
     <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-16">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-12">
         <div>
-          <img src="/mbtex-logo.png" alt="MBtex Group — Make It Happen" className="h-20 w-auto mb-5" data-testid="footer-logo" />
+          <img src="/mbtex-group-horizontal-vector.svg" alt="MBtex Group — Make It Happen" className="h-20 w-auto mb-5" data-testid="footer-logo" />
           <p className="font-serif-display italic text-white/50 text-lg">
             Building Platforms. Connecting Markets. Creating Sustainable Growth.
           </p>
