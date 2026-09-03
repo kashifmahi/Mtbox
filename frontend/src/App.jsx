@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import "@/App.css";
 import Lenis from "lenis";
 import { Toaster } from "sonner";
+import { LanguageProvider } from "@/i18n/LanguageContext";
 import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { EditorialMarquee } from "@/components/site/EditorialMarquee";
@@ -35,7 +36,8 @@ function App() {
   };
 
   return (
-    <div className="App relative bg-[#071A33] min-h-screen">
+    <LanguageProvider>
+      <div className="App relative bg-[#071A33] min-h-screen">
       <div className="grain-overlay" />
       <Toaster position="top-right" richColors theme="dark" offset={{ top: 96 }} />
       <Navbar onNavigate={navigate} />
@@ -50,7 +52,8 @@ function App() {
         <Contact />
       </main>
       <Footer onNavigate={navigate} />
-    </div>
+      </div>
+    </LanguageProvider>
   );
 }
 

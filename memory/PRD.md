@@ -33,7 +33,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - server.js is portable: serves frontend/dist when present, binds NODE_PORT||PORT||8002, loads .env from its own dir
 - Missing MONGO_URL/DB_NAME → boots anyway, clear log, contact routes 503 (fixed Infomaniak crash loop; verified by testing agent iteration_12)
 - Unreachable DB → try/catch on Mongo ops returns 503, unhandledRejection/uncaughtException handlers keep process alive; input length caps added
-- Contact.jsx API base falls back to same-origin when REACT_APP_BACKEND_URL unset
+- Multi-language (June 2026): EN/FR/DE via custom i18n — /app/frontend/src/i18n/LanguageContext.jsx (React context, localStorage persistence 'mbtex-lang', sets document lang) + translations/en.js, fr.js, de.js (full site copy). All site components consume useLang(); language switcher pills in navbar (data-testid lang-switch-en/fr/de) + mobile menu. Verified: FR/DE render, persistence on reload.
 - Email notifications (June 2026): every new contact inquiry emailed to OWNER_EMAIL (info@mbtexgroup.com) via Emergent managed email proxy (POST integrations.emergentagent.com/api/v1/email/send, X-Email-Key auth) from Node server.js; fire-and-forget after DB insert, guardrail gate (assertSafeEmail) on every send, from_name=EMAIL_FROM_NAME (MBtex Group); env: EMERGENT_EMAIL_KEY, EMAIL_FROM_NAME, OWNER_EMAIL in backend/.env (must be copied to Infomaniak too). Verified end-to-end (202 + logged send id).
 
 ## Backlog / Next

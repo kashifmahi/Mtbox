@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
-
-const links = [
-  { label: "Who We Are", href: "#who-we-are" },
-  { label: "What We Do", href: "#what-we-do" },
-  { label: "Approach", href: "#approach" },
-  { label: "Values", href: "#values" },
-];
+import { useLang, LANGS } from "@/i18n/LanguageContext";
 
 export const Navbar = ({ onNavigate }) => {
+  const { t, lang, setLang } = useLang();
+  const links = [
+    { label: t.nav.who, href: "#who-we-are" },
+    { label: t.nav.what, href: "#what-we-do" },
+    { label: t.nav.approach, href: "#approach" },
+    { label: t.nav.values, href: "#values" },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -55,8 +56,22 @@ export const Navbar = ({ onNavigate }) => {
             className="btn-gold font-grotesk text-[0.72rem] uppercase tracking-[0.22em] px-6 py-2.5 rounded-full"
             data-testid="nav-partner-cta"
           >
-            Partner With Us
+            {t.nav.partner}
           </button>
+          <div className="flex items-center gap-1 border-l border-white/15 pl-4" data-testid="language-switcher">
+            {LANGS.map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                data-testid={`lang-switch-${l}`}
+                className={`font-grotesk text-[0.65rem] uppercase tracking-[0.15em] px-2.5 py-1.5 rounded-full transition-colors duration-300 ${
+                  lang === l ? "bg-[#C9A227] text-[#071A33]" : "text-white/50 hover:text-[#C9A227]"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
         </nav>
 
         <button className="lg:hidden text-white" onClick={() => setOpen(!open)} data-testid="mobile-menu-toggle">
@@ -72,8 +87,22 @@ export const Navbar = ({ onNavigate }) => {
             </button>
           ))}
           <button onClick={() => go("#contact")} className="btn-gold font-grotesk text-sm uppercase tracking-[0.2em] px-6 py-3 rounded-full w-fit">
-            Partner With Us
+            {t.nav.partner}
           </button>
+          <div className="flex items-center gap-2" data-testid="mobile-language-switcher">
+            {LANGS.map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                data-testid={`mobile-lang-switch-${l}`}
+                className={`font-grotesk text-xs uppercase tracking-[0.15em] px-3 py-2 rounded-full ${
+                  lang === l ? "bg-[#C9A227] text-[#071A33]" : "text-white/50 border border-white/15"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </motion.header>

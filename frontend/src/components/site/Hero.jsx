@@ -2,8 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { GeometricBackground } from "./GeometricBackground";
 import { ArrowDown } from "@phosphor-icons/react";
-
-const lines = ["Building Platforms.", "Connecting Markets.", "Creating Sustainable Growth."];
+import { useLang } from "@/i18n/LanguageContext";
 
 const MaskedLine = ({ text, delay, accent }) => (
   <div className="overflow-hidden">
@@ -19,6 +18,7 @@ const MaskedLine = ({ text, delay, accent }) => (
 );
 
 export const Hero = ({ onNavigate }) => {
+  const { t } = useLang();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const yBg = useTransform(scrollYProgress, [0, 1], [0, 180]);
@@ -45,13 +45,13 @@ export const Hero = ({ onNavigate }) => {
           className="flex items-center gap-4 mb-10"
         >
           <div className="w-14 h-px bg-[#C9A227]" />
-          <span className="overline-label text-[#C9A227]" data-testid="hero-overline">MBtex Group · Switzerland · International Operations</span>
+          <span className="overline-label text-[#C9A227]" data-testid="hero-overline">{t.hero.overline}</span>
         </motion.div>
 
-        <h1 className="mb-10">
-          <MaskedLine text={lines[0]} delay={0.5} />
-          <MaskedLine text={lines[1]} delay={0.65} />
-          <MaskedLine text={lines[2]} delay={0.8} accent />
+        <h1 className="mb-10" key={t.hero.lines[0]}>
+          <MaskedLine text={t.hero.lines[0]} delay={0.5} />
+          <MaskedLine text={t.hero.lines[1]} delay={0.65} />
+          <MaskedLine text={t.hero.lines[2]} delay={0.8} accent />
         </h1>
 
         <motion.p
@@ -61,9 +61,7 @@ export const Hero = ({ onNavigate }) => {
           className="max-w-2xl text-white/60 text-base md:text-lg leading-relaxed mb-12"
           data-testid="hero-subtext"
         >
-          An international diversified group developing and connecting businesses across real estate
-          and urban development, financial technology, sports infrastructure, global commodities, and
-          sustainable brands.
+          {t.hero.subtext}
         </motion.p>
 
         <motion.div
@@ -77,14 +75,14 @@ export const Hero = ({ onNavigate }) => {
             className="btn-primary font-grotesk text-[0.72rem] uppercase tracking-[0.22em] px-8 py-4 rounded-full"
             data-testid="hero-cta-explore"
           >
-            Explore Our Platforms
+            {t.hero.ctaExplore}
           </button>
           <button
             onClick={() => onNavigate("#contact")}
             className="btn-gold font-grotesk text-[0.72rem] uppercase tracking-[0.22em] px-8 py-4 rounded-full"
             data-testid="hero-cta-partner"
           >
-            Partner With Us
+            {t.hero.ctaPartner}
           </button>
         </motion.div>
 
@@ -95,12 +93,7 @@ export const Hero = ({ onNavigate }) => {
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/10 pt-10"
           data-testid="hero-stats"
         >
-          {[
-            ["05", "Business Platforms"],
-            ["CH", "Swiss Incorporated"],
-            ["Global", "Market Reach"],
-            ["Long-Term", "Value Creation"],
-          ].map(([v, l]) => (
+          {t.hero.stats.map(({ v, l }) => (
             <div key={l}>
               <div className="font-serif-display text-3xl md:text-4xl text-[#C9A227]">{v}</div>
               <div className="font-grotesk text-[0.68rem] uppercase tracking-[0.2em] text-white/40 mt-2">{l}</div>
