@@ -1,9 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { List, X } from "@phosphor-icons/react";
+import { List, X, CaretDown } from "@phosphor-icons/react";
 import { useLang, LANGS } from "@/i18n/LanguageContext";
 
 const FLAGS = { en: "gb", fr: "fr", de: "de", es: "es", pt: "pt", ar: "sa" };
+const NAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Español", pt: "Português", ar: "العربية" };
+
+const LangDropdown = ({ lang, setLang }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const close = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative" data-testid="language-switcher">
+      <button
+        onClick={() => setOpen(!open)}
+        data-testid="lang-dropdown-trigger"
+        className="flex items-center gap-2 border border-white/15 rounded-full pl-2.5 pr-3 py-1.5 hover:border-[#C9A227]/60 transition-colors duration-300"
+      >
+        <img src={`https://flagcdn.com/w40/${FLAGS[lang]}.png`} alt={lang.toUpperCase()} className="w-6 h-4 object-cover rounded-[3px] block" />
+        <CaretDown size={12} className={`text-white/60 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 top-full mt-3 min-w-[170px] bg-[#0a2242]/95 backdrop-blur-xl border border-[#C9A227]/25 rounded-md py-2 shadow-2xl shadow-black/40 z-50"
+          data-testid="lang-dropdown-menu"
+        >
+          {LANGS.map((l) => (
+            <button
+              key={l}
+              onClick={() => {
+                setLang(l);
+                setOpen(false);
+              }}
+              data-testid={`lang-switch-${l}`}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-200 hover:bg-white/5 ${
+                lang === l ? "bg-[#C9A227]/10" : ""
+              }`}
+            >
+              <img src={`https://flagcdn.com/w40/${FLAGS[l]}.png`} alt={l.toUpperCase()} className="w-6 h-4 object-cover rounded-[3px] block" />
+              <span className={`font-grotesk text-xs tracking-wide ${lang === l ? "text-[#C9A227]" : "text-white/70"}`}>{NAMES[l]}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const Navbar = ({ onNavigate }) => {
   const { t, lang, setLang } = useLang();
@@ -39,7 +89,7 @@ export const Navbar = ({ onNavigate }) => {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
         <button onClick={() => go("#hero")} className="flex items-center" data-testid="navbar-logo">
-          <img src="/mbtex-group-horizontal-vector.svg" alt="MBtex Group — Make It Happen" className="h-12 w-auto" />
+          <img src="/mbtex-group-horizontal-vector.svg" alt="MBtex Group — Make It Happen" className="h-[72px] w-auto" />
         </button>
 
         <nav className="hidden lg:flex items-center gap-10">
@@ -60,20 +110,8 @@ export const Navbar = ({ onNavigate }) => {
           >
             {t.nav.partner}
           </button>
-          <div className="flex items-center gap-2 border-l border-white/15 pl-4" data-testid="language-switcher">
-            {LANGS.map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                data-testid={`lang-switch-${l}`}
-                title={l.toUpperCase()}
-                className={`rounded-[3px] transition-all duration-300 ${
-                  lang === l ? "ring-2 ring-[#C9A227] ring-offset-2 ring-offset-[#071A33] scale-110" : "opacity-50 hover:opacity-100"
-                }`}
-              >
-                <img src={`https://flagcdn.com/w40/${FLAGS[l]}.png`} alt={l.toUpperCase()} className="w-6 h-4 object-cover rounded-[3px] block" />
-              </button>
-            ))}
+          <div className="border-l border-white/15 pl-4">
+            <LangDropdown lang={lang} setLang={setLang} />
           </div>
         </nav>
 
