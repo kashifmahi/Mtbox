@@ -37,7 +37,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Email notifications (June 2026): every new contact inquiry emailed to OWNER_EMAIL (info@mbtexgroup.com) via Emergent managed email proxy (POST integrations.emergentagent.com/api/v1/email/send, X-Email-Key auth) from Node server.js; fire-and-forget after DB insert, guardrail gate (assertSafeEmail) on every send, from_name=EMAIL_FROM_NAME (MBtex Group); env: EMERGENT_EMAIL_KEY, EMAIL_FROM_NAME, OWNER_EMAIL in backend/.env (must be copied to Infomaniak too). Verified end-to-end (202 + logged send id).
 
 ## Backlog / Next
-- Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; its globe section replaced with the previous globe (tab-icon art, base64-embedded raster) per user request; older PNG kept as fallback asset
+- Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; its globe section replaced with the previous globe (tab-icon art, base64-embedded raster) per user request; older PNG kept as fallback asset. Navbar logo enlarged to h-[88px] desktop / h-[64px] mobile (header h-24) per user request (Jun 2026)
 - Favicon branding: logo globe extracted onto navy circle (favicon.ico/png + apple-touch-icon), page title "MBtex Group — Building Platforms. Connecting Markets.", theme-color #071A33
 - P1: Team/company history section (placeholder in write-up)
 - P2: Multi-page expansion (dedicated platform pages), newsletter capture
