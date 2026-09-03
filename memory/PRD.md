@@ -34,6 +34,7 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Missing MONGO_URL/DB_NAME → boots anyway, clear log, contact routes 503 (fixed Infomaniak crash loop; verified by testing agent iteration_12)
 - Unreachable DB → try/catch on Mongo ops returns 503, unhandledRejection/uncaughtException handlers keep process alive; input length caps added
 - Contact.jsx API base falls back to same-origin when REACT_APP_BACKEND_URL unset
+- Email notifications (June 2026): every new contact inquiry emailed to OWNER_EMAIL (info@mbtexgroup.com) via Emergent managed email proxy (POST integrations.emergentagent.com/api/v1/email/send, X-Email-Key auth) from Node server.js; fire-and-forget after DB insert, guardrail gate (assertSafeEmail) on every send, from_name=EMAIL_FROM_NAME (MBtex Group); env: EMERGENT_EMAIL_KEY, EMAIL_FROM_NAME, OWNER_EMAIL in backend/.env (must be copied to Infomaniak too). Verified end-to-end (202 + logged send id).
 
 ## Backlog / Next
 - Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; its globe section replaced with the previous globe (tab-icon art, base64-embedded raster) per user request; older PNG kept as fallback asset
