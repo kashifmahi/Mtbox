@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
 import { useLang, LANGS } from "@/i18n/LanguageContext";
 
-const FLAGS = { en: "gb", fr: "fr", de: "de", es: "es", ar: "sa" };
+const FLAGS = { en: "gb", fr: "fr", de: "de", es: "es", pt: "pt", ar: "sa" };
 
 export const Navbar = ({ onNavigate }) => {
   const { t, lang, setLang } = useLang();

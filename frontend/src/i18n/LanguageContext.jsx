@@ -4,9 +4,10 @@ import fr from "./translations/fr";
 import de from "./translations/de";
 import es from "./translations/es";
 import ar from "./translations/ar";
+import pt from "./translations/pt";
 
-const dicts = { en, fr, de, es, ar };
-export const LANGS = ["en", "fr", "de", "es", "ar"];
+const dicts = { en, fr, de, es, pt, ar };
+export const LANGS = ["en", "fr", "de", "es", "pt", "ar"];
 
 const LanguageContext = createContext(null);
 
