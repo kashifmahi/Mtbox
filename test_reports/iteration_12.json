@@ -1,0 +1,60 @@
+{
+  "summary": "Verified the MONGO_URL-missing crash-loop fix in /app/backend/server.js plus full regression of the contact API and the live contact form. (1) MISSING-ENV PATH: copied server.js to /tmp/mbtex_sim (symlinked node_modules, NO .env) and ran with `env -u MONGO_URL -u DB_NAME PORT=9477 node server.js` — process booted and stayed alive >15s (no crash, no restart loop), logged the clear '[MBtex] MONGO_URL is not set ... Create backend/.env with ...' message exactly ONCE, GET /api/ -> 200 {message:'MBtex Group API'}, POST /api/contact -> 503 {detail:'Database not configured. Set MONGO_URL and DB_NAME in backend/.env'}, GET /api/contact -> 503 same detail. Reported bug is FIXED. (2) NORMAL PATH: 8/8 pytest tests passed against the external URL (health, POST+GET persistence with _id excluded, optional fields null, 5 invalid-payload 422 cases). (3) FRONTEND e2e: live site loads, contact form fills, POST /api/contact returns 200, success toast 'Thank you. Your inquiry has been received' shown, form resets, no console errors / failed requests. (4) NEW FINDING: a second crash-loop path still exists — when MONGO_URL IS set but the DB is unreachable (wrong Atlas URI / IP not whitelisted, very likely on Infomaniak), POST /api/contact throws inside the async handler; Express 4 does not catch async rejections, so Node 20 exits on unhandledRejection and the process restart-loops with the same user-visible symptom. Reproduced deterministically with MONGO_URL=mongodb://127.0.0.1:59999 (curl got HTTP:000, process died).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/contact (and GET /api/contact)",
+        "issue": "No try/catch around inquiries.insertOne / find. If MONGO_URL is set but Mongo is unreachable/auth fails, the async handler rejects; Express 4 does not handle async rejections, Node 20 terminates on unhandledRejection -> process exits -> supervisor/Passenger restart loop (same symptom the user reported). Reproduced: MONGO_URL=mongodb://127.0.0.1:59999 + one POST killed the process. Fix: wrap handlers in try/catch (or express-async-handler), return 503/500 JSON, and add process.on('unhandledRejection'/'uncaughtException') logging. Also recommend client.connect() at boot with a caught error so a bad URI is logged clearly instead of failing at first request.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "startup",
+        "issue": "MONGO_URL present but DB_NAME missing -> client.db(undefined) uses the URI's default DB (or throws for URIs without a path). Worth validating DB_NAME alongside MONGO_URL and logging the same actionable message."
+      },
+      {
+        "endpoint": "POST /api/contact",
+        "issue": "No length caps / sanitisation on name, email, company, interest, message — unbounded strings are persisted (spam/payload-size risk on a public form)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Contact section (PARTNER WITH US)",
+        "issues": [
+          "'SEND INQUIRY' button is bright saturated blue with a strong glow, which clashes with the site's navy + gold editorial palette used everywhere else (nav 'PARTNER WITH US' pill is gold-outlined). Consider aligning to the gold/outline accent.",
+          "Minor: input placeholder text on the dark glass inputs is fairly low contrast; still legible but close to the WCAG AA floor."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Wrap the /api/contact route bodies in try/catch and return 503/500 JSON instead of letting Mongo errors become unhandled rejections (currently crashes the Node process — same crash-loop symptom as the original bug).",
+    "Add process.on('unhandledRejection') and process.on('uncaughtException') handlers that log and keep the site serving, so self-hosted deployments never restart-loop.",
+    "Optional: validate DB_NAME together with MONGO_URL, and add max-length validation on contact form fields."
+  ],
+  "critical_code_review_comments": [
+    "server.js:65 and :70 — async Express 4 handlers with no error handling; any Mongo failure (network, auth, timeout) terminates the process. This is the highest-value remaining hardening for the self-hosting scenario.",
+    "server.js:22-36 — the conditional MongoClient + dbRequired middleware pattern is correct and the log message is clear/actionable; no change needed there.",
+    "server.js:26 — client.db(process.env.DB_NAME) with DB_NAME undefined silently falls back to the URI default database; should be validated.",
+    "server.js is 91 lines, uses env vars only, and correctly excludes MongoDB _id via projection — good."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100% (8/8 pytest, plus missing-env scenario all assertions passed)", "frontend": "100% (load, validation toast, submit, success toast, form reset)"},
+  "seed_data_creation": "Created 9 TEST_QA_* contact inquiries during testing; all deleted afterwards from the contact_inquiries collection (name starting with TEST_). Temp sim dirs /tmp/mbtex_sim and /tmp/mbtex_sim2 removed, their node processes killed. /app/backend/.env was NOT touched; 'backend' python proxy was NOT restarted.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "None required; /app/memory/test_credentials.md contains only the template header (no accounts) — fine, this app has no auth.",
+  "context_for_next_testing_agent": "Reusable regression suite at /app/backend/tests/backend_test.py (8 tests, runs against REACT_APP_BACKEND_URL). Missing-env repro recipe: cp /app/backend/server.js + package.json to a temp dir, ln -s /app/backend/node_modules, run with `setsid env -u MONGO_URL -u DB_NAME PORT=<free> node <dir>/server.js` (use setsid + nohup-style redirect, otherwise the backgrounded process is killed with the bash tool session). Unreachable-DB crash repro: same dir with MONGO_URL=mongodb://127.0.0.1:59999 then POST /api/contact. Remember .env values are quoted, strip quotes when parsing.",
+  "rca_of_the_issue": "Original bug: `new MongoClient(process.env.MONGO_URL)` was executed unconditionally at module load; with MONGO_URL absent on the Infomaniak host, MongoClient called undefined.startsWith() and threw during startup, so the process died immediately and the host's process manager restart-looped. Current code guards MongoClient behind `if (mongoUrl)`, logs an actionable message, keeps serving the site, and gates the DB routes with a dbRequired 503 middleware — verified working. Residual risk (new finding): the failure just moves to request time when MONGO_URL is set but wrong/unreachable, because the unguarded async Mongo calls produce an unhandledRejection that Node 20 turns into a process exit, recreating the crash loop."
+}

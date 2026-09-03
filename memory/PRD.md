@@ -29,6 +29,12 @@ Build a corporate-level landing page for MBtex Group (Swiss international divers
 - Contact section: glassmorphic form → MongoDB (verified), sonner toast; footer
 - Grain overlay, gold selection/scrollbar, micro-interactions throughout
 
+## Self-hosting hardening (June 2026)
+- server.js is portable: serves frontend/dist when present, binds NODE_PORT||PORT||8002, loads .env from its own dir
+- Missing MONGO_URL/DB_NAME → boots anyway, clear log, contact routes 503 (fixed Infomaniak crash loop; verified by testing agent iteration_12)
+- Unreachable DB → try/catch on Mongo ops returns 503, unhandledRejection/uncaughtException handlers keep process alive; input length caps added
+- Contact.jsx API base falls back to same-origin when REACT_APP_BACKEND_URL unset
+
 ## Backlog / Next
 - Branding: official MBtex horizontal VECTOR logo (user-provided SVG, /app/frontend/public/mbtex-group-horizontal-vector.svg) in navbar + footer; its globe section replaced with the previous globe (tab-icon art, base64-embedded raster) per user request; older PNG kept as fallback asset
 - Favicon branding: logo globe extracted onto navy circle (favicon.ico/png + apple-touch-icon), page title "MBtex Group — Building Platforms. Connecting Markets.", theme-color #071A33
