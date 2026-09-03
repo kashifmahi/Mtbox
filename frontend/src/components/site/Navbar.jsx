@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
 import { useLang, LANGS } from "@/i18n/LanguageContext";
 
+const FLAGS = { en: "gb", fr: "fr", de: "de", es: "es", ar: "sa" };
+
 export const Navbar = ({ onNavigate }) => {
   const { t, lang, setLang } = useLang();
   const links = [
@@ -58,17 +60,18 @@ export const Navbar = ({ onNavigate }) => {
           >
             {t.nav.partner}
           </button>
-          <div className="flex items-center gap-1 border-l border-white/15 pl-4" data-testid="language-switcher">
+          <div className="flex items-center gap-2 border-l border-white/15 pl-4" data-testid="language-switcher">
             {LANGS.map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
                 data-testid={`lang-switch-${l}`}
-                className={`font-grotesk text-[0.65rem] uppercase tracking-[0.15em] px-2.5 py-1.5 rounded-full transition-colors duration-300 ${
-                  lang === l ? "bg-[#C9A227] text-[#071A33]" : "text-white/50 hover:text-[#C9A227]"
+                title={l.toUpperCase()}
+                className={`rounded-[3px] transition-all duration-300 ${
+                  lang === l ? "ring-2 ring-[#C9A227] ring-offset-2 ring-offset-[#071A33] scale-110" : "opacity-50 hover:opacity-100"
                 }`}
               >
-                {l}
+                <img src={`https://flagcdn.com/w40/${FLAGS[l]}.png`} alt={l.toUpperCase()} className="w-6 h-4 object-cover rounded-[3px] block" />
               </button>
             ))}
           </div>
@@ -89,17 +92,18 @@ export const Navbar = ({ onNavigate }) => {
           <button onClick={() => go("#contact")} className="btn-gold font-grotesk text-sm uppercase tracking-[0.2em] px-6 py-3 rounded-full w-fit">
             {t.nav.partner}
           </button>
-          <div className="flex items-center gap-2" data-testid="mobile-language-switcher">
+          <div className="flex items-center gap-3" data-testid="mobile-language-switcher">
             {LANGS.map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
                 data-testid={`mobile-lang-switch-${l}`}
-                className={`font-grotesk text-xs uppercase tracking-[0.15em] px-3 py-2 rounded-full ${
-                  lang === l ? "bg-[#C9A227] text-[#071A33]" : "text-white/50 border border-white/15"
+                title={l.toUpperCase()}
+                className={`rounded-[3px] transition-all duration-300 ${
+                  lang === l ? "ring-2 ring-[#C9A227] ring-offset-2 ring-offset-[#071A33] scale-110" : "opacity-50"
                 }`}
               >
-                {l}
+                <img src={`https://flagcdn.com/w40/${FLAGS[l]}.png`} alt={l.toUpperCase()} className="w-7 h-5 object-cover rounded-[3px] block" />
               </button>
             ))}
           </div>
