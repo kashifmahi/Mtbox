@@ -1,8 +1,14 @@
-import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { MongoClient } from "mongodb";
 import { randomUUID } from "crypto";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 app.use(express.json());
@@ -50,7 +56,16 @@ app.get("/api/contact", async (req, res) => {
   res.json(docs);
 });
 
-const port = Number(process.env.NODE_PORT || 8002);
+// Self-hosting: serve the built frontend (frontend/dist) if it exists
+const dist = path.join(__dirname, "../frontend/dist");
+if (fs.existsSync(dist)) {
+  app.use(express.static(dist));
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(dist, "index.html"));
+  });
+}
+
+const port = Number(process.env.NODE_PORT || process.env.PORT || 8002);
 app.listen(port, "0.0.0.0", () => {
   console.log(`Node backend listening on ${port}`);
 });

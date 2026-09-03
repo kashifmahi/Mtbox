@@ -5,7 +5,7 @@ import { Reveal, SectionHeader } from "./Reveal";
 import { GeometricBackground } from "./GeometricBackground";
 import { EnvelopeSimple, MapPin, PaperPlaneTilt } from "@phosphor-icons/react";
 
-const API = `${import.meta.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${import.meta.env.REACT_APP_BACKEND_URL || ""}/api`;
 const interests = ["Real Estate & Urban Development", "Fintech & Digital Infrastructure", "Sports Infrastructure & Events", "Global Commodities Trading", "Sustainable & Green Brands", "General Partnership"];
 
 export const Contact = () => {
